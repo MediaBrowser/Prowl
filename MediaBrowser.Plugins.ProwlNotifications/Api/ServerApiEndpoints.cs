@@ -6,7 +6,8 @@ using MediaBrowser.Controller.Net;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Services;
 using MediaBrowser.Plugins.ProwlNotifications.Configuration;
-
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MediaBrowser.Plugins.ProwlNotifications.Api
 {
@@ -34,7 +35,13 @@ namespace MediaBrowser.Plugins.ProwlNotifications.Api
                 .FirstOrDefault(i => string.Equals(i.MediaBrowserUserId, userID, StringComparison.OrdinalIgnoreCase));
         }
 
-        public object Post(TestNotification request)
+        public void Post(TestNotification request)
+        {
+            var task = PostAsync(request);
+            Task.WaitAll(task);
+        }
+
+        private async Task PostAsync(TestNotification request)
         {
             var options = GetOptions(request.UserID);
 
@@ -48,7 +55,18 @@ namespace MediaBrowser.Plugins.ProwlNotifications.Api
 
             _logger.Debug("Prowl <TEST> to {0}", options.Token);
 
-            return _httpClient.Post(new HttpRequestOptions { Url = "https://api.prowlapp.com/publicapi/add" }, parameters);
+            var httpRequestOptions = new HttpRequestOptions
+            {
+                Url = "https://api.prowlapp.com/publicapi/add",
+                CancellationToken = CancellationToken.None
+            };
+
+            httpRequestOptions.SetPostData(parameters);
+
+            using (await _httpClient.Post(httpRequestOptions).ConfigureAwait(false))
+            {
+
+            }
         }
     }
 }

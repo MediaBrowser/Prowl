@@ -40,7 +40,7 @@ namespace MediaBrowser.Plugins.ProwlNotifications
             get { return Plugin.Instance.Name; }
         }
 
-        public Task SendNotification(UserNotification request, CancellationToken cancellationToken)
+        public async Task SendNotification(UserNotification request, CancellationToken cancellationToken)
         {
             var options = GetOptions(request.User);
 
@@ -62,7 +62,18 @@ namespace MediaBrowser.Plugins.ProwlNotifications
 
             _logger.Debug("Prowl to {0} - {1} - {2}", options.Token, request.Name, request.Description);
 
-            return _httpClient.Post("https://api.prowlapp.com/publicapi/add", parameters, cancellationToken);
+            var httpRequestOptions = new HttpRequestOptions
+            {
+                Url = "https://api.prowlapp.com/publicapi/add",
+                CancellationToken = cancellationToken
+            };
+
+            httpRequestOptions.SetPostData(parameters);
+
+            using (await _httpClient.Post(httpRequestOptions).ConfigureAwait(false))
+            {
+
+            }
         }
 
         private bool IsValid(ProwlOptions options)
