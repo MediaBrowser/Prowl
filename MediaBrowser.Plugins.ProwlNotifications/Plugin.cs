@@ -5,6 +5,8 @@ using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using MediaBrowser.Plugins.ProwlNotifications.Configuration;
+using System.IO;
+using MediaBrowser.Model.Drawing;
 
 namespace MediaBrowser.Plugins.ProwlNotifications
 {
@@ -55,6 +57,20 @@ namespace MediaBrowser.Plugins.ProwlNotifications
             get
             {
                 return "Sends notifications via Prowl Service.";
+            }
+        }
+
+        public Stream GetThumbImage()
+        {
+            var type = GetType();
+            return type.Assembly.GetManifestResourceStream(type.Namespace + ".thumb.png");
+        }
+
+        public ImageFormat ThumbImageFormat
+        {
+            get
+            {
+                return ImageFormat.Png;
             }
         }
 
