@@ -56,7 +56,7 @@
 
                         })[0] || {};
 
-                        $('#chkEnableProwl', page).checked(prowlConfig.Enabled || false).checkboxradio("refresh");
+                        page.querySelector('#chkEnableProwl').checked=prowlConfig.Enabled || false;
                         $('#txtProwlAuthKey', page).val(prowlConfig.Token || '');
 
                         Dashboard.hideLoadingMsg();
@@ -147,7 +147,7 @@
 
                         prowlConfig.MediaBrowserUserId = userId;
 
-                        prowlConfig.Enabled = $('#chkEnableProwl', form).checked();
+                        prowlConfig.Enabled = form.querySelector('#chkEnableProwl').checked;
                         prowlConfig.Token = $('#txtProwlAuthKey', form).val();
 
                         ApiClient.updatePluginConfiguration(pluginId, config).then(Dashboard.processPluginConfigurationUpdateResult);
