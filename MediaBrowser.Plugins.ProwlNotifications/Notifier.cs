@@ -3,46 +3,37 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Notifications;
 using MediaBrowser.Model.Logging;
-using MediaBrowser.Plugins.ProwlNotifications.Configuration;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Emby.Notifications;
+using MediaBrowser.Controller.Configuration;
 
 namespace MediaBrowser.Plugins.ProwlNotifications
 {
-    public class Notifier : INotificationService
+    public class Notifier : INotifier
     {
-        private readonly ILogger _logger;
-        private readonly IHttpClient _httpClient;
+        private IServerConfigurationManager _config;
+        private ILogger _logger;
+        private IHttpClient _httpClient;
 
-        public Notifier(ILogManager logManager, IHttpClient httpClient)
+        public static string TestNotificationId = "system.prowlnotificationtest";
+        public Notifier(IServerConfigurationManager config, ILogger logger, IHttpClient httpClient)
         {
-            _logger = logManager.GetLogger(GetType().Name);
-            _httpClient = httpClient;
-        }
-
-        public bool IsEnabledForUser(User user)
-        {
-            var options = GetOptions(user);
-
-            return options != null && IsValid(options) && options.Enabled;
-        }
-
-        private ProwlOptions GetOptions(User user)
-        {
-            return Plugin.Instance.Configuration.Options
-                .FirstOrDefault(i => string.Equals(i.MediaBrowserUserId, user.Id.ToString("N"), StringComparison.OrdinalIgnoreCase));
+            _config = config;
+            _logger = logger;
+            _httpClient = httpClient;   
         }
 
         public string Name
         {
-            get { return Plugin.Instance.Name; }
+            get { return Plugin.StaticName; }
         }
 
-        public async Task SendNotification(UserNotification request, CancellationToken cancellationToken)
+        public async Task SendNotification(InternalNotificationRequest request, CancellationToken cancellationToken)
         {
-            var options = GetOptions(request.User);
+            var options = request.Configuration as ProwlNotificationInfo;
 
             var parameters = new Dictionary<string, string>
             {
@@ -52,15 +43,15 @@ namespace MediaBrowser.Plugins.ProwlNotifications
 
             if (string.IsNullOrEmpty(request.Description))
             {
-                parameters.Add("event", request.Name);
+                parameters.Add("event", request.Title);
             }
             else
             {
-                parameters.Add("event", request.Name);
+                parameters.Add("event", request.Title);
                 parameters.Add("description", request.Description);
             }
 
-            _logger.Debug("Prowl to {0} - {1} - {2}", options.Token, request.Name, request.Description);
+            _logger.Debug("Prowl to {0} - {1} - {2}", options.Token, request.Title, request.Description);
 
             var httpRequestOptions = new HttpRequestOptions
             {
@@ -76,9 +67,9 @@ namespace MediaBrowser.Plugins.ProwlNotifications
             }
         }
 
-        private bool IsValid(ProwlOptions options)
+        public NotificationInfo[] GetConfiguredNotifications()
         {
-            return !string.IsNullOrEmpty(options.Token);
+            return _config.GetConfiguredNotifications();
         }
     }
 }

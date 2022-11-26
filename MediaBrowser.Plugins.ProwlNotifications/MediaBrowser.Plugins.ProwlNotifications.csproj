@@ -7,17 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Configuration\config.html" />
+    <None Remove="Configuration\prowl.html" />
+    <None Remove="Configuration\prowl.js" />
+    <None Remove="Configuration\prowleditor.js" />
+    <None Remove="Configuration\prowleditor.template.html" />
     <None Remove="thumb.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\config.html" />
+    <EmbeddedResource Include="Configuration\prowl.html" />
+    <EmbeddedResource Include="Configuration\prowl.js" />
+    <EmbeddedResource Include="Configuration\prowleditor.js" />
+    <EmbeddedResource Include="Configuration\prowleditor.template.html" />
     <EmbeddedResource Include="thumb.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="mediabrowser.server.core" Version="3.6.0.36-beta" />
+    <PackageReference Include="mediabrowser.server.core" Version="4.8.0.20-beta" />
   </ItemGroup>
 
 </Project>
