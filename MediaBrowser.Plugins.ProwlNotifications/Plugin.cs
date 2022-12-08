@@ -15,34 +15,27 @@ namespace MediaBrowser.Plugins.ProwlNotifications
     /// </summary>
     public class Plugin : BasePlugin, IHasWebPages, IHasThumbImage, IHasTranslations
     {
+        private const string EditorJsName = "prowlnotificationeditorjs";
+
         public IEnumerable<PluginPageInfo> GetPages()
         {
             return new[]
             {
                 new PluginPageInfo
                 {
-                    Name = "prowlnotifications",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.prowl.html",
-                    EnableInMainMenu = true,
-                    MenuIcon = "notifications"
-                },
-                new PluginPageInfo
-                {
-                    Name = "prowlnotificationsjs",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.prowl.js"
-                },
-                new PluginPageInfo
-                {
-                    Name = "prowlnotificationeditorjs",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.prowleditor.js"
+                    Name = EditorJsName,
+                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.entryeditor.js"
                 },
                 new PluginPageInfo
                 {
                     Name = "prowleditortemplate",
-                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.prowleditor.template.html"
+                    EmbeddedResourcePath = GetType().Namespace + ".Configuration.entryeditor.template.html",
+                    IsMainConfigPage = false
                 }
             };
         }
+
+        public string NotificationSetupModuleUrl => GetPluginPageUrl(EditorJsName);
 
         public TranslationInfo[] GetTranslations()
         {

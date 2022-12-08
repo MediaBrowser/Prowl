@@ -2,28 +2,25 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;</TargetFrameworks>
-    <AssemblyVersion>3.1.4.0</AssemblyVersion>
-    <FileVersion>3.1.4.0</FileVersion>
+    <AssemblyVersion>3.1.5.0</AssemblyVersion>
+    <FileVersion>3.1.5.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Configuration\prowl.html" />
-    <None Remove="Configuration\prowl.js" />
-    <None Remove="Configuration\prowleditor.js" />
-    <None Remove="Configuration\prowleditor.template.html" />
+    <None Remove="Configuration\entryeditor.js" />
+    <None Remove="Configuration\entryeditor.template.html" />
     <None Remove="thumb.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\prowl.html" />
-    <EmbeddedResource Include="Configuration\prowl.js" />
-    <EmbeddedResource Include="Configuration\prowleditor.js" />
-    <EmbeddedResource Include="Configuration\prowleditor.template.html" />
+    <EmbeddedResource Include="Configuration\entryeditor.js" />
+    <EmbeddedResource Include="Configuration\entryeditor.template.html" />
     <EmbeddedResource Include="thumb.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="mediabrowser.server.core" Version="4.8.0.20-beta" />
+    <PackageReference Include="mediabrowser.server.core" Version="4.8.0.20-beta10" />
+    <PackageReference Include="System.Memory" Version="4.5.3" />
   </ItemGroup>
 
 </Project>

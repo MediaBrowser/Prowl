@@ -9,35 +9,40 @@ using System.Threading;
 using System.Threading.Tasks;
 using Emby.Notifications;
 using MediaBrowser.Controller.Configuration;
+using MediaBrowser.Controller;
 
 namespace MediaBrowser.Plugins.ProwlNotifications
 {
-    public class Notifier : INotifier
+    public class Notifier : IUserNotifier
     {
-        private IServerConfigurationManager _config;
         private ILogger _logger;
+        private IServerApplicationHost _appHost;
         private IHttpClient _httpClient;
 
-        public static string TestNotificationId = "system.prowlnotificationtest";
-        public Notifier(IServerConfigurationManager config, ILogger logger, IHttpClient httpClient)
+        public Notifier(ILogger logger, IServerApplicationHost applicationHost, IHttpClient httpClient)
         {
-            _config = config;
             _logger = logger;
-            _httpClient = httpClient;   
+            _appHost = applicationHost;
+            _httpClient = httpClient;
         }
 
-        public string Name
-        {
-            get { return Plugin.StaticName; }
-        }
+        private Plugin Plugin => _appHost.Plugins.OfType<Plugin>().First();
+
+        public string Name => Plugin.StaticName;
+
+        public string Key => "pushbulletnotifications";
+
+        public string SetupModuleUrl => Plugin.NotificationSetupModuleUrl;
 
         public async Task SendNotification(InternalNotificationRequest request, CancellationToken cancellationToken)
         {
-            var options = request.Configuration as ProwlNotificationInfo;
+            var options = request.Configuration.Options;
+
+            options.TryGetValue("Token", out string token);
 
             var parameters = new Dictionary<string, string>
             {
-                {"apikey", options.Token},
+                {"apikey", token},
                 {"application", "Emby"}
             };
 
@@ -51,8 +56,6 @@ namespace MediaBrowser.Plugins.ProwlNotifications
                 parameters.Add("description", request.Description);
             }
 
-            _logger.Debug("Prowl to {0} - {1} - {2}", options.Token, request.Title, request.Description);
-
             var httpRequestOptions = new HttpRequestOptions
             {
                 Url = "https://api.prowlapp.com/publicapi/add",
@@ -65,11 +68,6 @@ namespace MediaBrowser.Plugins.ProwlNotifications
             {
 
             }
-        }
-
-        public NotificationInfo[] GetConfiguredNotifications()
-        {
-            return _config.GetConfiguredNotifications();
         }
     }
 }
