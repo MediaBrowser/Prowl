@@ -59,7 +59,7 @@ namespace MediaBrowser.Plugins.ProwlNotifications
             get { return _id; }
         }
 
-        public static string StaticName = "Prowl Notifications";
+        public static string StaticName = "Prowl";
 
         /// <summary>
         /// Gets the name of the plugin
@@ -67,7 +67,7 @@ namespace MediaBrowser.Plugins.ProwlNotifications
         /// <value>The name.</value>
         public override string Name
         {
-            get { return StaticName; }
+            get { return StaticName + " Notifications"; }
         }
 
         /// <summary>
