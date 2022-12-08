@@ -30,7 +30,7 @@ namespace MediaBrowser.Plugins.ProwlNotifications
 
         public string Name => Plugin.StaticName;
 
-        public string Key => "pushbulletnotifications";
+        public string Key => "prowlnotifications";
 
         public string SetupModuleUrl => Plugin.NotificationSetupModuleUrl;
 
